@@ -283,7 +283,7 @@ component using this API. For now, you can render it alongside the login button.
 You can get a spinner icon via:
 
 ```javascript
-import {FaSpinner} from 'react-icons/fa'
+
 
 // 💰 To make a regular component a "styled component" you can do:
 // const Spinner = styled(FaSpinner)({/* styles here */})
