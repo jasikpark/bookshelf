@@ -27,7 +27,7 @@ export function useBook(bookId, user) {
  */
 export function useBookSearch(query, user) {
   invariant(user?.token, '`user.token` required for auth')
-  invariant(query, '`query` is a required argument')
+  invariant(typeof query === 'string', '`query` is a required argument')
   return useQuery(['bookSearch', {query}], async () =>
     client(`books?query=${encodeURIComponent(query)}`, {
       token: user.token,

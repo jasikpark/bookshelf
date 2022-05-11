@@ -42,11 +42,16 @@ export function useListItems(user) {
 /**
  *
  * @param {User} user
+ * @param {Record<string, any> | undefined} options
  */
-export function useUpdateListItem(user) {
+export function useUpdateListItem(user, options) {
   invariant(
     user && user.token,
     '`useUpdateListItem` requires a user token to auth with the backend',
+  )
+  invariant(
+    typeof options === 'object' || typeof options === 'undefined',
+    '`options` should be an object or undefined',
   )
   return useMutation(
     async updates => {
@@ -57,18 +62,23 @@ export function useUpdateListItem(user) {
         data: updates,
       })
     },
-    {onSettled: () => queryCache.invalidateQueries('list-items')},
+    {onSettled: () => queryCache.invalidateQueries('list-items'), ...options},
   )
 }
 
 /**
  *
  * @param {User} user
+ * @param {Record<string, any> | undefined} options
  */
-export function useRemoveListItem(user) {
+export function useRemoveListItem(user, options) {
   invariant(
     user && user.token,
     '`useRemoveListItem` requires a user token to auth with the backend',
+  )
+  invariant(
+    typeof options === 'object' || typeof options === 'undefined',
+    '`options` should be an object or undefined',
   )
   return useMutation(
     async listItem => {
@@ -78,27 +88,30 @@ export function useRemoveListItem(user) {
         method: 'DELETE',
       })
     },
-    {onSettled: () => queryCache.invalidateQueries('list-items')},
+    {onSettled: () => queryCache.invalidateQueries('list-items'), ...options},
   )
 }
 
 /**
  *
  * @param {User} user
+ * @param {Record<string, any> | undefined} options
  */
-export function useCreateListItem(user) {
+export function useCreateListItem(user, options) {
   invariant(
     user && user.token,
     '`useCreateListItem` requires a user token to auth with the backend',
+  )
+  invariant(
+    typeof options === 'object' || typeof options === 'undefined',
+    '`options` should be an object or undefined',
   )
   return useMutation(
     async ({bookId}) => {
       invariant(bookId, '`bookId` is a required argument')
       return client('list-items', {token: user.token, data: {bookId}})
     },
-    {
-      onSettled: () => queryCache.invalidateQueries('list-items'),
-    },
+    {onSettled: () => queryCache.invalidateQueries('list-items'), ...options},
     {token: user.token},
   )
 }
