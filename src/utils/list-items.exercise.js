@@ -1,6 +1,7 @@
 import {useQuery, useMutation, queryCache} from 'react-query'
 import {client} from 'utils/api-client.exercise'
 import invariant from 'tiny-invariant'
+import {setQueryDataForBook} from './books.exercise'
 
 /**
  *
@@ -34,8 +35,16 @@ export function useListItems(user) {
     user && user.token,
     '`useListItems` requires a user token to auth with the backend',
   )
-  return useQuery('list-items', async () =>
-    client('list-items', {token: user.token}),
+  return useQuery(
+    'list-items',
+    () => client('list-items', {token: user.token}),
+    {
+      onSuccess({listItems}) {
+        for (const listItem of listItems) {
+          setQueryDataForBook(listItem.book)
+        }
+      },
+    },
   )
 }
 

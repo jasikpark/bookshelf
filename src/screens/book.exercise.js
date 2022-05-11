@@ -17,6 +17,7 @@ import bookPlaceholderSvg from 'assets/book-placeholder.svg'
 import {useBook} from 'utils/books.exercise'
 import {useListItem, useUpdateListItem} from 'utils/list-items.exercise'
 import {ErrorMessage} from 'components/lib'
+import {FaSpinner} from 'react-icons/fa'
 
 const loadingBook = {
   title: 'Loading...',
@@ -132,7 +133,7 @@ function NotesTextarea({listItem, user}) {
   // 💰 if you want to get the list-items cache updated after this query finishes
   // the use the `onSettled` config option to queryCache.invalidateQueries('list-items')
 
-  const [mutate, {isError, error}] = useUpdateListItem(user)
+  const [mutate, {isError, error, isLoading}] = useUpdateListItem(user)
 
   const debouncedMutate = React.useMemo(
     () => debounceFn(mutate, {wait: 300}),
@@ -158,14 +159,15 @@ function NotesTextarea({listItem, user}) {
         >
           Notes
         </label>
+        {isLoading ? <FaSpinner /> : null}
+        {isError ? (
+          <ErrorMessage
+            error={error}
+            variant="inline"
+            css={{marginLeft: 6, fontSize: '0.7em'}}
+          />
+        ) : null}
       </div>
-      {isError ? (
-        <ErrorMessage
-          error={error}
-          variant="inline"
-          css={{marginLeft: 6, fontSize: '0.7em'}}
-        />
-      ) : null}
       <Textarea
         id="notes"
         defaultValue={listItem.notes}

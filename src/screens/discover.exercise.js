@@ -9,7 +9,7 @@ import * as colors from 'styles/colors'
 import {BookRow} from 'components/book-row'
 import {BookListUL, Spinner, Input} from 'components/lib'
 import bookPlaceholderSvg from 'assets/book-placeholder.svg'
-import {useBookSearch} from 'utils/books.exercise'
+import {refetchBooksSearchQuery, useBookSearch} from 'utils/books.exercise'
 
 const loadingBook = {
   title: 'Loading...',
@@ -36,6 +36,11 @@ function DiscoverBooksScreen({user}) {
     query,
     user,
   )
+
+  React.useEffect(() => {
+    // call this on cleanup
+    return () => refetchBooksSearchQuery(undefined, user)
+  }, [query, user])
 
   const books = data ?? loadingBooks
 
