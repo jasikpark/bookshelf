@@ -6,6 +6,7 @@ import * as React from 'react'
 // 🐨 you'll also need the client from utils/api-client
 import {FaStar} from 'react-icons/fa'
 import * as colors from 'styles/colors'
+import {useUpdateListItem} from 'utils/list-items.exercise'
 
 const visuallyHiddenCSS = {
   border: '0',
@@ -26,7 +27,7 @@ function Rating({listItem, user}) {
   //   you can pass as data.
   // 💰 if you want to get the list-items cache updated after this query finishes
   // the use the `onSettled` config option to queryCache.invalidateQueries('list-items')
-  const update = () => {}
+  const update = useUpdateListItem(user)
 
   React.useEffect(() => {
     function handleKeyDown(event) {

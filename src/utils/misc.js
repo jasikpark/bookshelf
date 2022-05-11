@@ -4,3 +4,8 @@ const formatDate = date =>
   )
 
 export {formatDate}
+
+export const tap = (value, fn) => {
+  fn(value)
+  return value
+}

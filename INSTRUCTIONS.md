@@ -83,8 +83,8 @@ That should be enough to get you going.
 
 Production deploys:
 
-- [Exercise](https://exercises-06-cache-management.bookshelf.lol/exercise)
-- [Final](https://exercises-06-cache-management.bookshelf.lol/)
+- [Exercise](https://exercises-06-cache-management.bookshelf.lol/final/exercise)
+- [Final](https://exercises-06-cache-management.bookshelf.lol/final/)
 
 👨‍💼 Our users are anxious to get going on their reading lists. Several already
 have some books picked out! We've got the backend and the UI all ready to go.
@@ -127,6 +127,8 @@ credit will really simplify things for you!
 
 ### 1. 💯 Make hooks
 
+[Production deploy](https://exercises-06-cache-management.bookshelf.lol/final/extra-1)
+
 How are you enjoying all this repetition? No? Yeah, I'm not a big fan either.
 Here's where React hooks come in really handy! Let's make a few custom hooks.
 Here are a few ideas:
@@ -155,7 +157,7 @@ data.
 
 ### 2. 💯 Wrap the `<App />` in a `<ReactQueryConfigProvider />`
 
-[Production deploy](https://exercises-06-cache-management.bookshelf.lol/extra-2)
+[Production deploy](https://exercises-06-cache-management.bookshelf.lol/final/extra-2)
 
 Currently, we're not doing any error handling for our queries. If there's an
 error, we don't show the user at all.
@@ -212,7 +214,7 @@ again and it should give you an error message and not retry the request anymore.
 
 ### 3. 💯 Handle mutation errors properly
 
-[Production deploy](https://exercises-06-cache-management.bookshelf.lol/extra-3)
+[Production deploy](https://exercises-06-cache-management.bookshelf.lol/final/extra-3)
 
 Currently, if there's an error during a mutation, we don't show the user
 anything. Instead, we should show the error message to the user. We'll need to
@@ -296,7 +298,7 @@ can call `reset` from `useAsync`).
 
 ### 4. 💯 Add a loading spinner for the notes
 
-[Production deploy](https://exercises-06-cache-management.bookshelf.lol/extra-4)
+[Production deploy](https://exercises-06-cache-management.bookshelf.lol/final/extra-4)
 
 If you made it this far, then you're a real champ. I'm going to let you figure
 this one out on your own. Try to add an inline loading spinner to the notes in
@@ -310,7 +312,7 @@ Tip: you can get `isLoading` from the mutation query.
 
 ### 5. 💯 Prefetch the book search query
 
-[Production deploy](https://exercises-06-cache-management.bookshelf.lol/extra-5)
+[Production deploy](https://exercises-06-cache-management.bookshelf.lol/final/extra-5)
 
 Right now, open up the app and do this:
 
@@ -353,7 +355,7 @@ component.
 
 ### 6. 💯 Add books to the query cache
 
-[Production deploy](https://exercises-06-cache-management.bookshelf.lol/extra-6)
+[Production deploy](https://exercises-06-cache-management.bookshelf.lol/final/extra-6)
 
 Right now, open up the app and do this:
 
@@ -403,7 +405,7 @@ book is: `['book', {bookId}]`.
 
 ### 7. 💯 Add optimistic updates and recovery
 
-[Production deploy](https://exercises-06-cache-management.bookshelf.lol/extra-7)
+[Production deploy](https://exercises-06-cache-management.bookshelf.lol/final/extra-7)
 
 What percent of mutation requests (requests intended to make a change to data)
 in your app are successful? 50%? 70%? 90%? 99%? I would argue that the vast

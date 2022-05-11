@@ -5,6 +5,7 @@ import * as React from 'react'
 import * as auth from 'auth-provider'
 import {BrowserRouter as Router} from 'react-router-dom'
 // 🐨 you'll need the queryCache from react-query
+import {queryCache} from 'react-query'
 import {FullPageSpinner} from './components/lib'
 import * as colors from './styles/colors'
 import {client} from './utils/api-client'
@@ -46,6 +47,7 @@ function App() {
     auth.logout()
     // 🐨 clear the query cache with queryCache.clear()
     setData(null)
+    queryCache.clear()
   }
 
   if (isLoading || isIdle) {

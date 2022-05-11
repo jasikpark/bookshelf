@@ -34,7 +34,8 @@
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "^4.0.3",
-    "stop-runaway-react-effects": "^2.0.0"
+    "stop-runaway-react-effects": "^2.0.0",
+    "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
     "@testing-library/cypress": "^8.0.2",
