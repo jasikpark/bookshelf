@@ -35,6 +35,7 @@ function bookSearchFetch(query, user) {
 }
 
 export function setQueryDataForBook(book) {
+  invariant(book.id, '`book.id` must exist')
   queryCache.setQueryData(['book', {bookId: book.id}], book)
 }
 
@@ -48,7 +49,7 @@ export function useBookSearch(query, user) {
   invariant(typeof query === 'string', '`query` is a required argument')
   return useQuery(['bookSearch', {query}], () => bookSearchFetch(query, user), {
     onSuccess: books => {
-      for (const book in books) {
+      for (const book of books) {
         setQueryDataForBook(book)
       }
     },
@@ -69,7 +70,7 @@ export async function refetchBooksSearchQuery(query = '', user) {
     () => bookSearchFetch(query, user),
     {
       onSuccess: books => {
-        for (const book in books) {
+        for (const book of books) {
           setQueryDataForBook(book)
         }
       },

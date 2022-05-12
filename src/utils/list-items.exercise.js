@@ -63,7 +63,7 @@ export function useUpdateListItem(user, options) {
     '`options` should be an object or undefined',
   )
   return useMutation(
-    async updates => {
+    updates => {
       invariant(updates?.id, '`updates.id` is a required argument')
       return client(`list-items/${updates.id}`, {
         token: user.token,
@@ -71,7 +71,44 @@ export function useUpdateListItem(user, options) {
         data: updates,
       })
     },
-    {onSettled: () => queryCache.invalidateQueries('list-items'), ...options},
+    {
+      onMutate: updates => {
+        console.log('called useUpdateListItem/onMutate')
+        const {listItems} = queryCache.getQueryData('list-items')
+        if (!listItems) {
+          return
+        }
+
+        const [originalListItem] = listItems.filter(
+          listItem => listItem.id === updates.id,
+        )
+
+        const updatedListItem = {...originalListItem, ...updates}
+
+        const updatedListItems = listItems.map(listItem => {
+          if (listItem.id === updatedListItem.id) {
+            return updatedListItem
+          }
+          return listItem
+        })
+        queryCache.setQueryData('list-items', updatedListItems)
+
+        return originalListItem
+      },
+      onError: (err, updates, originalListItem) => {
+        console.log('called useUpdateListItem/onError')
+        const {listItems} = queryCache.getQueryData('list-items')
+        const originalListItems = listItems.map(listItem => {
+          if (listItem.id === originalListItem.id) {
+            return originalListItem
+          }
+          return listItem
+        })
+        queryCache.setQueryData('list-items', originalListItems)
+      },
+      onSettled: () => queryCache.invalidateQueries('list-items'),
+      ...options,
+    },
   )
 }
 
@@ -90,14 +127,42 @@ export function useRemoveListItem(user, options) {
     '`options` should be an object or undefined',
   )
   return useMutation(
-    async listItem => {
+    listItem => {
       invariant(listItem?.id, '`listItem.id` is a required argument')
       return client(`list-items/${listItem.id}`, {
         token: user.token,
         method: 'DELETE',
       })
     },
-    {onSettled: () => queryCache.invalidateQueries('list-items'), ...options},
+    {
+      onMutate: listItemToDelete => {
+        console.log('called useRemoveListItem/onMutate')
+        const {listItems} = queryCache.getQueryData('list-items')
+        if (!listItems) {
+          return
+        }
+
+        const [originalListItem] = listItems.filter(
+          listItem => listItem.id === listItemToDelete.id,
+        )
+
+        const updatedListItems = listItems.filter(
+          listItem => listItem.id !== listItemToDelete.id,
+        )
+
+        queryCache.setQueryData('list-items', updatedListItems)
+
+        return originalListItem
+      },
+      onError: (err, listItemToDelete, originalListItem) => {
+        console.log('called useRemoveListItem/onError')
+        const {listItems} = queryCache.getQueryData('list-items')
+        const originalListItems = [...listItems, originalListItem]
+        queryCache.setQueryData('list-items', originalListItems)
+      },
+      onSettled: () => queryCache.invalidateQueries('list-items'),
+      ...options,
+    },
   )
 }
 
@@ -116,11 +181,32 @@ export function useCreateListItem(user, options) {
     '`options` should be an object or undefined',
   )
   return useMutation(
-    async ({bookId}) => {
+    ({bookId}) => {
       invariant(bookId, '`bookId` is a required argument')
       return client('list-items', {token: user.token, data: {bookId}})
     },
-    {onSettled: () => queryCache.invalidateQueries('list-items'), ...options},
-    {token: user.token},
+    {
+      onMutate: ({bookId} = {}) => {
+        console.log('called useCreateListItem/onMutate')
+        const {listItems} = queryCache.getQueryData('list-items') ?? {}
+        const {book} = queryCache.getQueryData('book', {bookId}) ?? {}
+        if (!listItems || !book) {
+          return
+        }
+
+        const updatedListItems = [...listItems, book]
+        console.log('added', book, 'creating', updatedListItems)
+        queryCache.setQueryData('list-items', updatedListItems)
+      },
+      onError: (err, {bookId} = {}) => {
+        const {listItems} = queryCache.getQueryData('list-items')
+        const originalListItems = listItems.filter(
+          listItem => listItem.bookId !== bookId,
+        )
+        queryCache.setQueryData('list-items', originalListItems)
+      },
+      onSettled: () => queryCache.invalidateQueries('list-items'),
+      ...options,
+    },
   )
 }

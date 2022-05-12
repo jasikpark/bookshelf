@@ -91,7 +91,7 @@ function StatusButtons({user, book}) {
             // 🐨 add an onClick here that calls update with the data we want to update
             // 💰 to mark a list item as unread, set the finishDate to null
             // {id: listItem.id, finishDate: null}
-            onClick={async () => update({id: listItem.id, finishDate: null})}
+            onClick={() => update({id: listItem.id, finishDate: null})}
             icon={<FaBook />}
           />
         ) : (
@@ -101,9 +101,7 @@ function StatusButtons({user, book}) {
             // 🐨 add an onClick here that calls update with the data we want to update
             // 💰 to mark a list item as read, set the finishDate
             // {id: listItem.id, finishDate: Date.now()}
-            onClick={async () =>
-              update({id: listItem.id, finishDate: Date.now()})
-            }
+            onClick={() => update({id: listItem.id, finishDate: Date.now()})}
             icon={<FaCheckCircle />}
           />
         )
@@ -113,7 +111,7 @@ function StatusButtons({user, book}) {
           label="Remove from list"
           highlight={colors.danger}
           // 🐨 add an onClick here that calls remove
-          onClick={async () => remove({id: listItem.id})}
+          onClick={() => remove({id: listItem.id})}
           icon={<FaMinusCircle />}
         />
       ) : (
@@ -121,7 +119,7 @@ function StatusButtons({user, book}) {
           label="Add to list"
           highlight={colors.indigo}
           // 🐨 add an onClick here that calls create
-          onClick={async () => create({bookId: book.id})}
+          onClick={() => create({bookId: book.id})}
           icon={<FaPlusCircle />}
         />
       )}
