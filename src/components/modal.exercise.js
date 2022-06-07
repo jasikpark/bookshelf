@@ -38,14 +38,10 @@ const ModalContext = createContext()
 // 🐨 create a Modal component that manages the isOpen state (via useState)
 // and renders the ModalContext.Provider with the value which will pass the
 // isOpen state and setIsOpen function
-function Modal({children}) {
+function Modal(props) {
   const [isOpen, setIsOpen] = useState(false)
 
-  return (
-    <ModalContext.Provider value={[isOpen, setIsOpen]}>
-      {children}
-    </ModalContext.Provider>
-  )
+  return <ModalContext.Provider value={[isOpen, setIsOpen]} {...props} />
 }
 // 🐨 create a ModalDismissButton component that accepts children which will be
 // the button which we want to clone to set it's onClick prop to trigger the
