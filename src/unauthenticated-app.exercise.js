@@ -103,16 +103,14 @@ function UnauthenticatedApp() {
         */}
         <Modal>
           <ModalOpenButton>
-            <Button variant="primary">Login</Button>
+            <Button
+              variant="primary"
+              onClick={() => console.log('opening the modal')}
+            >
+              Login
+            </Button>
           </ModalOpenButton>
-          <ModalContents aria-label="Login form">
-            <ModalDismissButton>
-              <CircleButton>
-                <VisuallyHidden>Close</VisuallyHidden>
-                <span aria-hidden>×</span>
-              </CircleButton>
-            </ModalDismissButton>
-            <h3 css={{textAlign: 'center', fontSize: '2em'}}>Login form</h3>
+          <ModalContents aria-label="Login form" title="Login form">
             <LoginForm
               onSubmit={login}
               submitButton={<Button variant="primary">Login</Button>}
@@ -121,16 +119,14 @@ function UnauthenticatedApp() {
         </Modal>
         <Modal>
           <ModalOpenButton>
-            <Button variant="primary">Register</Button>
+            <Button
+              variant="primary"
+              onClick={() => console.log('opening the modal')}
+            >
+              Register
+            </Button>
           </ModalOpenButton>
-          <ModalContents aria-label="Register form">
-            <ModalDismissButton>
-              <CircleButton>
-                <VisuallyHidden>Close</VisuallyHidden>
-                <span aria-hidden>×</span>
-              </CircleButton>
-            </ModalDismissButton>
-            <h3 css={{textAlign: 'center', fontSize: '2em'}}>Register form</h3>
+          <ModalContents aria-label="Register form" title="Register form">
             <LoginForm
               onSubmit={register}
               submitButton={<Button variant="primary">Register</Button>}
