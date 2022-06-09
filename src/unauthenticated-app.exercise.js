@@ -120,7 +120,7 @@ function UnauthenticatedApp() {
         <Modal>
           <ModalOpenButton>
             <Button
-              variant="primary"
+              variant="secondary"
               onClick={() => console.log('opening the modal')}
             >
               Register
@@ -129,7 +129,7 @@ function UnauthenticatedApp() {
           <ModalContents aria-label="Register form" title="Register form">
             <LoginForm
               onSubmit={register}
-              submitButton={<Button variant="primary">Register</Button>}
+              submitButton={<Button variant="secondary">Register</Button>}
             />
           </ModalContents>
         </Modal>
