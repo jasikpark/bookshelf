@@ -5,14 +5,6 @@ import {server, rest} from 'test/server'
 import {client} from '../api-client'
 
 const apiURL = process.env.REACT_APP_API_URL
-// 🐨 add a beforeAll to start the server with `server.listen()`
-// 🐨 add an afterAll to stop the server when `server.close()`
-// 🐨 afterEach test, reset the server handlers to their original handlers
-// via `server.resetHandlers()`
-beforeAll(() => server.listen())
-afterAll(() => server.close())
-afterEach(() => server.resetHandlers())
-// 🐨 flesh these out:
 
 test('calls fetch at the endpoint with the arguments for GET requests', async () => {
   // 🐨 add a server handler to handle a test request you'll be making
