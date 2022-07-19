@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.17.12",
+    "@fast-check/jest": "^0.0.1",
     "@testing-library/cypress": "^8.0.3",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -48,6 +49,7 @@
     "cypress": "^10.1.0",
     "cypress-hmr-restarter": "^2.0.3",
     "eslint-plugin-cypress": "^2.12.1",
+    "fast-check": "^3.0.1",
     "husky": "4.3.8",
     "inquirer": "^9.0.0",
     "is-ci": "^3.0.1",
