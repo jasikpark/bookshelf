@@ -1,43 +1,63 @@
 // 🐨 you'll need the test server
 // 💰 the way that our tests are set up, you'll find this in `src/test/server/test-server.js`
-// import {server, rest} from 'test/server'
+import {server, rest} from 'test/server'
 // 🐨 grab the client
-// import {client} from '../api-client'
+import {client} from '../api-client'
 
+const apiURL = process.env.REACT_APP_API_URL
 // 🐨 add a beforeAll to start the server with `server.listen()`
 // 🐨 add an afterAll to stop the server when `server.close()`
 // 🐨 afterEach test, reset the server handlers to their original handlers
 // via `server.resetHandlers()`
-
+beforeAll(() => server.listen())
+afterAll(() => server.close())
+afterEach(() => server.resetHandlers())
 // 🐨 flesh these out:
 
-test.todo('calls fetch at the endpoint with the arguments for GET requests')
-// 🐨 add a server handler to handle a test request you'll be making
-// 💰 because this is the first one, I'll give you the code for how to do that.
-// const endpoint = 'test-endpoint'
-// const mockResult = {mockValue: 'VALUE'}
-// server.use(
-//   rest.get(`${apiURL}/${endpoint}`, async (req, res, ctx) => {
-//     return res(ctx.json(mockResult))
-//   }),
-// )
-//
-// 🐨 call the client (don't forget that it's asynchronous)
-// 🐨 assert that the resolved value from the client call is correct
+test('calls fetch at the endpoint with the arguments for GET requests', async () => {
+  // 🐨 add a server handler to handle a test request you'll be making
+  // 💰 because this is the first one, I'll give you the code for how to do that.
+  const endpoint = 'test-endpoint'
+  const mockResult = {mockValue: 'VALUE'}
+  server.use(
+    rest.get(`${apiURL}/${endpoint}`, async (req, res, ctx) => {
+      return res(ctx.json(mockResult))
+    }),
+  )
+  //
+  // 🐨 call the client (don't forget that it's asynchronous)
+  const resp = await client(endpoint)
 
-test.todo('adds auth token when a token is provided')
-// 🐨 create a fake token (it can be set to any string you want)
-// 🐨 create a "request" variable with let
-// 🐨 create a server handler to handle a test request you'll be making
-// 🐨 inside the server handler, assign "request" to "req" so we can use that
-//     to assert things later.
-//     💰 so, something like...
-//       async (req, res, ctx) => {
-//         request = req
-//         ... etc...
-//
-// 🐨 call the client with the token (note that it's async)
-// 🐨 verify that `request.headers.get('Authorization')` is correct (it should include the token)
+  // 🐨 assert that the resolved value from the client call is correct
+
+  expect(resp).toStrictEqual(mockResult)
+})
+
+test('adds auth token when a token is provided', async () => {
+  // 🐨 create a fake token (it can be set to any string you want)
+  const fakeToken = 'totally real and not fake token='
+  const endpoint = 'test-endpoint'
+  // 🐨 create a "request" variable with let
+  let request
+  // 🐨 create a server handler to handle a test request you'll be making
+  // 🐨 inside the server handler, assign "request" to "req" so we can use that
+  //     to assert things later.
+  //     💰 so, something like...
+  //       async (req, res, ctx) => {
+  //         request = req
+  //         ... etc...
+  server.use(
+    rest.get(`${apiURL}/${endpoint}`, async (req, res, ctx) => {
+      request = req
+      return res(ctx.json([]))
+    }),
+  )
+  // 🐨 call the client with the token (note that it's async)
+  await client(endpoint, {token: fakeToken})
+
+  // 🐨 verify that `request.headers.get('Authorization')` is correct (it should include the token)
+  expect(request.headers.get('Authorization')).toContain(fakeToken)
+})
 
 test.todo('allows for config overrides')
 // 🐨 do a very similar setup to the previous test
