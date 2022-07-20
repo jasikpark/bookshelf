@@ -66,7 +66,7 @@ test('calling run with a promise which resolves', async () => {
   //    (💰 this updates state too and you'll need it to be an async `act` call so you can await the promise)
   await act(async () => {
     resolve()
-    await promise
+    await p
   })
   // 🐨 assert the resolved state
   expect(result.current).toEqual({
@@ -100,11 +100,87 @@ test('calling run with a promise which resolves', async () => {
   })
 })
 
-test.todo('calling run with a promise which rejects')
-// 🐨 this will be very similar to the previous test, except you'll reject the
-// promise instead and assert on the error state.
-// 💰 to avoid the promise actually failing your test, you can catch
-//    the promise returned from `run` with `.catch(() => {})`
+test('calling run with a promise which rejects', async () => {
+  // 🐨 this will be very similar to the previous test, except you'll reject the
+  // promise instead and assert on the error state.
+  // 💰 to avoid the promise actually failing your test, you can catch
+  //    the promise returned from `run` with `.catch(() => {})`
+
+  // 🐨 get a promise and resolve function from the deferred utility
+  const {promise, reject} = deferred()
+  // 🐨 use renderHook with useAsync to get the result
+  const {result} = renderHook(() => useAsync())
+  // 🐨 assert the result.current is the correct default state
+  expect(result.current).toEqual({
+    data: null,
+    error: null,
+    isError: false,
+    isIdle: true,
+    isLoading: false,
+    isSuccess: false,
+    reset: expect.any(Function),
+    run: expect.any(Function),
+    setData: expect.any(Function),
+    setError: expect.any(Function),
+    status: 'idle',
+  })
+  // 🐨 call `run`, passing the promise
+  //    (💰 this updates state so it needs to be done in an `act` callback)
+  let p
+  act(() => {
+    p = result.current.run(promise)
+  })
+  // 🐨 assert that result.current is the correct pending state
+  expect(result.current).toEqual({
+    data: null,
+    error: null,
+    isError: false,
+    isIdle: false,
+    isLoading: true,
+    isSuccess: false,
+    reset: expect.any(Function),
+    run: expect.any(Function),
+    setData: expect.any(Function),
+    setError: expect.any(Function),
+    status: 'pending',
+  })
+  // 🐨 call resolve and wait for the promise to be resolved
+  //    (💰 this updates state too and you'll need it to be an async `act` call so you can await the promise)
+  await act(async () => {
+    reject()
+    await p.catch(() => {})
+  })
+  // 🐨 assert the resolved state
+  expect(result.current).toEqual({
+    data: null,
+    error: undefined,
+    isError: true,
+    isIdle: false,
+    isLoading: false,
+    isSuccess: false,
+    reset: expect.any(Function),
+    run: expect.any(Function),
+    setData: expect.any(Function),
+    setError: expect.any(Function),
+    status: 'rejected',
+  })
+  // 🐨 call `reset` (💰 this will update state, so...)
+  act(() => result.current.reset())
+  // 🐨 assert the result.current has actually been reset
+  expect(result.current).toEqual({
+    data: null,
+    error: null,
+    isError: false,
+    isIdle: true,
+    isLoading: false,
+    isSuccess: false,
+    reset: expect.any(Function),
+    run: expect.any(Function),
+    setData: expect.any(Function),
+    setError: expect.any(Function),
+    status: 'idle',
+  })
+})
 
 test.todo('can specify an initial state')
 // 💰 useAsync(customInitialState)
