@@ -1,32 +1,42 @@
-import * as React from 'react'
 import {
-  waitForElementToBeRemoved,
-  screen,
   render as rtlRender,
+  screen,
+  waitForElementToBeRemoved,
 } from '@testing-library/react'
-import {buildUser} from 'test/generate'
-import * as auth from 'auth-provider'
+import userEvent from '@testing-library/user-event'
 import {AppProviders} from 'context'
+import * as auth from 'auth-provider'
+import {buildUser} from './generate'
+import * as usersDB from './data/users'
 
-import * as usersDB from 'test/data/users'
+async function render(ui, {route = '/list', user, ...renderOptions} = {}) {
+  // if you want to render the app unauthenticated then pass "null" as the user
+  user = typeof user === 'undefined' ? await loginAsUser() : user
+  window.history.pushState({}, 'Test page', route)
 
-export const waitForLoadingToFinish = async () =>
-  await waitForElementToBeRemoved(() => [
-    ...screen.queryAllByLabelText(/loading/i),
-    ...screen.queryAllByText(/loading/i),
-  ])
+  const returnValue = {
+    ...rtlRender(ui, {wrapper: AppProviders, ...renderOptions}),
+    user,
+  }
 
-export const loginAsUser = async () => {
-  const user = buildUser()
+  await waitForLoadingToFinish()
+
+  return returnValue
+}
+
+async function loginAsUser(userProperties) {
+  const user = buildUser(userProperties)
   await usersDB.create(user)
   const authUser = await usersDB.authenticate(user)
-  // this is what our auth provider does to persist the user's
-  // logged in state so it can give us a token without making a request
-  // every provider will be different and you'll need to adjust this
-  // to whatever they do (you may even have to mock more of their functions)
   window.localStorage.setItem(auth.localStorageKey, authUser.token)
   return authUser
 }
 
-export const render = (ui, options) =>
-  rtlRender(ui, {wrapper: AppProviders, ...options})
+const waitForLoadingToFinish = () =>
+  waitForElementToBeRemoved(() => [
+    ...screen.queryAllByLabelText(/loading/i),
+    ...screen.queryAllByText(/loading/i),
+  ])
+
+export * from '@testing-library/react'
+export {render, userEvent, loginAsUser, waitForLoadingToFinish}
