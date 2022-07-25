@@ -25,6 +25,7 @@ export const loginAsUser = async () => {
   // every provider will be different and you'll need to adjust this
   // to whatever they do (you may even have to mock more of their functions)
   window.localStorage.setItem(auth.localStorageKey, authUser.token)
+  return authUser
 }
 
 export const render = (ui, options) =>
