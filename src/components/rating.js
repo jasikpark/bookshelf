@@ -90,6 +90,8 @@ function Rating({listItem}) {
   })
   return (
     <div
+      role="radiogroup"
+      aria-label="Rating"
       onClick={e => e.stopPropagation()}
       className={rootClassName}
       css={{
