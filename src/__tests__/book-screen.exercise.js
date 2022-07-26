@@ -119,43 +119,48 @@ test('can edit a note', async () => {
   })
 }, 5000)
 
-test('shows an error message when the book fails to load', async () => {
-  const book = await booksDB.create(buildBook({id: 1234567890}))
-  await renderBookScreen({book, listItem: null})
-  expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot(
-    `"There was an error: Book not found"`,
-  )
-})
+describe('console errors', () => {
+  beforeAll(() => jest.spyOn(console, 'error').mockImplementation(() => {}))
+  afterAll(() => console.error.mockRestore())
 
-test('note update failures are displayed', async () => {
-  const apiURL = process.env.REACT_APP_API_URL
+  test('shows an error message when the book fails to load', async () => {
+    const book = await booksDB.create(buildBook({id: 1234567890}))
+    await renderBookScreen({book, listItem: null})
+    expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot(
+      `"There was an error: Book not found"`,
+    )
+  })
 
-  const testErrorMessage = '__test_error_message__'
-  server.use(
-    rest.put(`${apiURL}/list-items/:listItemId`, async (req, res, ctx) => {
-      return res(
-        ctx.status(400),
-        ctx.json({status: 400, message: testErrorMessage}),
-      )
-    }),
-  )
+  test('note update failures are displayed', async () => {
+    const apiURL = process.env.REACT_APP_API_URL
 
-  // using fake timers to skip debounce time
-  jest.useFakeTimers()
-  await renderBookScreen()
+    const testErrorMessage = '__test_error_message__'
+    server.use(
+      rest.put(`${apiURL}/list-items/:listItemId`, async (req, res, ctx) => {
+        return res(
+          ctx.status(400),
+          ctx.json({status: 400, message: testErrorMessage}),
+        )
+      }),
+    )
 
-  const newNotes = faker.lorem.words()
-  const notesTextarea = screen.getByRole('textbox', {name: /notes/i})
+    // using fake timers to skip debounce time
+    jest.useFakeTimers()
+    await renderBookScreen()
 
-  await fakeTimerUserEvent.clear(notesTextarea)
-  await fakeTimerUserEvent.type(notesTextarea, newNotes)
+    const newNotes = faker.lorem.words()
+    const notesTextarea = screen.getByRole('textbox', {name: /notes/i})
 
-  // wait for the loading spinner to show up
-  await screen.findByLabelText(/loading/i)
-  // wait for the loading spinner to go away
-  await waitForLoadingToFinish()
+    await fakeTimerUserEvent.clear(notesTextarea)
+    await fakeTimerUserEvent.type(notesTextarea, newNotes)
 
-  expect(screen.getByRole('alert')).toHaveTextContent(
-    `There was an error: ${testErrorMessage}`,
-  )
+    // wait for the loading spinner to show up
+    await screen.findByLabelText(/loading/i)
+    // wait for the loading spinner to go away
+    await waitForLoadingToFinish()
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      `There was an error: ${testErrorMessage}`,
+    )
+  })
 })
