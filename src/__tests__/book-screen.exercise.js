@@ -146,7 +146,7 @@ describe('console errors', () => {
 
     // using fake timers to skip debounce time
     jest.useFakeTimers()
-    await renderBookScreen()
+    const {listItem} = await renderBookScreen()
 
     const newNotes = faker.lorem.words()
     const notesTextarea = screen.getByRole('textbox', {name: /notes/i})
@@ -162,5 +162,8 @@ describe('console errors', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(
       `There was an error: ${testErrorMessage}`,
     )
+    expect(await listItemsDB.read(listItem.id)).not.toMatchObject({
+      notes: newNotes,
+    })
   })
 })
