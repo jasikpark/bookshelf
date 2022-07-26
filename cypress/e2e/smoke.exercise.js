@@ -1,5 +1,6 @@
 // 🐨 you'll want a fake user to register as:
 import {buildUser, buildBook} from '../support/generate'
+import faker from 'faker'
 
 describe('smoke', () => {
   it('should allow a typical user flow', () => {
@@ -43,21 +44,39 @@ describe('smoke', () => {
     // 🐨 ensure the "main" only has one element "listitem"
     //   💰 https://docs.cypress.io/api/commands/should.html (.should('have.length', 1))
     //   🐨 click the link with the name of the book you added to the list to go to the book's page
-    //
+    cy.findByRole('main').within(() => {
+      const bookTitle = 'How to Be an Antiracist'
+      cy.findAllByRole('listitem').should('have.length', 1)
+      cy.findByRole('listitem').within(() => {
+        cy.findByRole('link', {name: new RegExp(bookTitle, 'i')}).click()
+      })
+    })
     // 🐨 type in the notes textbox
     // The textbox is debounced, so the loading spinner won't show up immediately
     // so to make sure this is working, we need to wait for the spinner to show up
     // and *then* wait for it to go away.
     // 🐨 wait for the loading spinner to show up (💰 .should('exist'))
     // 🐨 wait for the loading spinner to go away (💰 .should('not.exist'))
-    //
+    cy.findByRole('main').within(() => {
+      const fakeNote = faker.lorem.words()
+      cy.findByRole('textbox', {name: /notes/i}).type(fakeNote)
+      cy.findByLabelText(/loading/i).should('exist')
+      cy.findByLabelText(/loading/i).should('not.exist')
+      cy.findByRole('textbox', {name: /notes/i}).should('have.value', fakeNote)
+    })
     // 🐨 mark the book as read
-    //
+    cy.findByRole('main').within(() => {
+      cy.findByRole('button', {name: /mark as read/i}).dblclick()
+      cy.findByRole('button', {name: /mark as unread/i}).should('exist')
+      cy.findByLabelText(/start and finish date/i).should('exist')
+    })
     // the radio buttons are fancy and the inputs themselves are visually hidden
     // in favor of nice looking stars, so we have to the force option to click.
     // 📜 https://docs.cypress.io/api/commands/click.html#Arguments
     // 🐨 click the 5 star rating radio button
-    //
+    cy.findByRole('main').within(() => {
+      cy.findByRole('radio', {name: /5 stars/i}).click({force: true})
+    })
     // 🐨 navigate to the finished books page
     //
     // 🐨 make sure there's only one listitem here (within "main")
