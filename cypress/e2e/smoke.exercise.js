@@ -1,17 +1,24 @@
 // 🐨 you'll want a fake user to register as:
-// import {buildUser} from '../support/generate'
+import {buildUser} from '../support/generate'
 
 describe('smoke', () => {
   it('should allow a typical user flow', () => {
     // 🐨 create a fake user
+    const user = buildUser()
     // 🐨 visit '/' (📜 https://docs.cypress.io/api/commands/visit.html)
+    cy.visit('/')
     // 🐨 find the button named "register" and click it
+    cy.findByRole('button', {name: /register/i}).click()
     // 🐨 within the "dialog" find the username and password fields,
     //    type into them the values for your fake user, then click the register
     //    button to submit the form
     // 📜 https://docs.cypress.io/api/commands/within.html#Syntax
     // 📜 https://docs.cypress.io/api/commands/type.html#Syntax
-    //
+    cy.findByRole('dialog').within($dialog => {
+      cy.findByRole('textbox', {name: /username/i}).type(user.username)
+      cy.findByLabelText(/password/i).type(user.password)
+      cy.findByRole('button', {name: /register/i}).click()
+    })
     // 🐨 within the "navigation", find the link named "discover" and click it
     //
     // 🐨 within the "main", type in the "searchbox" the title of a book and hit enter
