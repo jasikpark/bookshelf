@@ -1,15 +1,14 @@
 import {useQuery, useMutation, queryCache} from 'react-query'
-import {useAuth} from 'context/auth-context'
+import {useAuthenticatedClient} from 'context/auth-context'
 import {setQueryDataForBook} from './books'
-import {client} from './api-client'
 
 // 💣 remove the user argument here
 function useListItems() {
-  const {user} = useAuth()
+  const authenticatedClient = useAuthenticatedClient()
   const {data} = useQuery({
     queryKey: 'list-items',
     queryFn: () =>
-      client(`list-items`, {token: user.token}).then(data => data.listItems),
+      authenticatedClient(`list-items`).then(data => data.listItems),
     onSuccess: async listItems => {
       for (const listItem of listItems) {
         setQueryDataForBook(listItem.book)
@@ -33,13 +32,12 @@ const defaultMutationOptions = {
 
 // 💣 remove the user argument here
 function useUpdateListItem(options) {
-  const {user} = useAuth()
+  const authenticatedClient = useAuthenticatedClient()
   return useMutation(
     updates =>
-      client(`list-items/${updates.id}`, {
+      authenticatedClient(`list-items/${updates.id}`, {
         method: 'PUT',
         data: updates,
-        token: user.token,
       }),
     {
       onMutate(newItem) {
@@ -61,9 +59,9 @@ function useUpdateListItem(options) {
 
 // 💣 remove the user argument here
 function useRemoveListItem(options) {
-  const {user} = useAuth()
+  const authenticatedClient = useAuthenticatedClient()
   return useMutation(
-    ({id}) => client(`list-items/${id}`, {method: 'DELETE', token: user.token}),
+    ({id}) => authenticatedClient(`list-items/${id}`, {method: 'DELETE'}),
     {
       onMutate(removedItem) {
         const previousItems = queryCache.getQueryData('list-items')
@@ -82,9 +80,9 @@ function useRemoveListItem(options) {
 
 // 💣 remove the user argument here
 function useCreateListItem(options) {
-  const {user} = useAuth()
+  const authenticatedClient = useAuthenticatedClient()
   return useMutation(
-    ({bookId}) => client(`list-items`, {data: {bookId}, token: user.token}),
+    ({bookId}) => authenticatedClient(`list-items`, {data: {bookId}}),
     {...defaultMutationOptions, ...options},
   )
 }

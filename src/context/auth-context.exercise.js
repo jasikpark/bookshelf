@@ -17,6 +17,17 @@ export function useAuth() {
   return context
 }
 
+export function useAuthenticatedClient() {
+  const {
+    user: {token},
+  } = useAuth()
+
+  return React.useCallback(
+    (endpoint, options) => client(endpoint, {token, ...options}),
+    [token],
+  )
+}
+
 async function getUser() {
   let user = null
 
