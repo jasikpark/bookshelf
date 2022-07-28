@@ -1,8 +1,5 @@
-// 🐨 we're going to use React hooks in here now so we'll need React
-import * as React from 'react'
 import {useQuery, useMutation, queryCache} from 'react-query'
-// 🐨 get AuthContext from context/auth-context
-import {AuthContext, useAuth} from 'context/auth-context'
+import {useAuth} from 'context/auth-context'
 import {setQueryDataForBook} from './books'
 import {client} from './api-client'
 
